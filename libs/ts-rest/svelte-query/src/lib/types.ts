@@ -1,14 +1,19 @@
 import {
   StoreOrVal,
+  CreateMutationOptions as TanStackCreateMutationOptions,
+  CreateMutationResult as TanStackCreateMutationResult,
   CreateQueryOptions as TanStackCreateQueryOptions,
   CreateQueryResult as TanStackCreateQueryResult,
 } from '@tanstack/svelte-query';
 import {
   AppRoute,
+  ClientArgs,
   ClientInferResponses,
   ErrorHttpStatusCode,
+  PartialClientInferRequest,
   SuccessfulHttpStatusCode,
 } from '@ts-rest/core';
+import { InitClientReturn } from './svelte-query';
 
 // Data response if it's a 2XX
 export type DataResponse<TAppRoute extends AppRoute> = ClientInferResponses<
@@ -24,14 +29,43 @@ export type ErrorResponse<TAppRoute extends AppRoute> = ClientInferResponses<
   'ignore'
 >;
 
-// TODO get initial data type correct
 export type CreateQueryOptions<TAppRoute extends AppRoute> = StoreOrVal<
   TanStackCreateQueryOptions<
-    TAppRoute['responses'],
-    ErrorResponse<TAppRoute>,
-    DataResponse<TAppRoute>
-  > & { initialData?: any }
+    DataResponse<TAppRoute>,
+    ErrorResponse<TAppRoute>
+  > & { initialData?: TAppRoute['responses'] }
 >;
 
 export type CreateQueryResult<TAppRoute extends AppRoute> =
   TanStackCreateQueryResult<DataResponse<TAppRoute>, ErrorResponse<TAppRoute>>;
+
+type InferClientArgs<TClient extends InitClientReturn<any, any>> =
+  TClient extends InitClientReturn<any, infer TClientArgs>
+    ? TClientArgs
+    : never;
+
+export type CreateMutationOptions<
+  TAppRoute extends AppRoute,
+  TClientArgsOrClient extends ClientArgs | InitClientReturn<any, any>,
+> = TanStackCreateMutationOptions<
+  DataResponse<TAppRoute>,
+  ErrorResponse<TAppRoute>,
+  TClientArgsOrClient extends ClientArgs
+    ? PartialClientInferRequest<TAppRoute, TClientArgsOrClient>
+    : TClientArgsOrClient extends InitClientReturn<any, any>
+    ? PartialClientInferRequest<TAppRoute, InferClientArgs<TClientArgsOrClient>>
+    : never
+>;
+
+export type CreateMutationResult<
+  TAppRoute extends AppRoute,
+  TClientArgsOrClient extends ClientArgs | InitClientReturn<any, any>,
+> = TanStackCreateMutationResult<
+  DataResponse<TAppRoute>,
+  ErrorResponse<TAppRoute>,
+  TClientArgsOrClient extends ClientArgs
+    ? PartialClientInferRequest<TAppRoute, TClientArgsOrClient>
+    : TClientArgsOrClient extends InitClientReturn<any, any>
+    ? PartialClientInferRequest<TAppRoute, InferClientArgs<TClientArgsOrClient>>
+    : never
+>;

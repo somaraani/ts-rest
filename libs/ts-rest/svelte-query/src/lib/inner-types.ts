@@ -1,12 +1,18 @@
 import { QueryKey } from '@tanstack/svelte-query';
 import {
   AppRoute,
+  AppRouteMutation,
   AppRouteQuery,
   AreAllPropertiesOptional,
   ClientArgs,
   PartialClientInferRequest,
 } from '@ts-rest/core';
-import { CreateQueryOptions, CreateQueryResult } from './types';
+import {
+  CreateMutationOptions,
+  CreateMutationResult,
+  CreateQueryOptions,
+  CreateQueryResult,
+} from './types';
 
 export type AppRouteFunctions<
   TAppRoute extends AppRoute,
@@ -14,6 +20,9 @@ export type AppRouteFunctions<
 > = {
   createQuery: TAppRoute extends AppRouteQuery
     ? DataReturnQuery<TAppRoute, TClientArgs>
+    : never;
+  createMutation: TAppRoute extends AppRouteMutation
+    ? DataReturnMutation<TAppRoute, TClientArgs>
     : never;
 };
 
@@ -33,3 +42,11 @@ export type DataReturnQuery<
       args: TArgs,
       options?: CreateQueryOptions<TAppRoute>,
     ) => CreateQueryResult<TAppRoute>;
+
+// Used on X.createMutation
+export type DataReturnMutation<
+  TAppRoute extends AppRoute,
+  TClientArgs extends ClientArgs,
+> = (
+  options?: CreateMutationOptions<TAppRoute, TClientArgs>,
+) => CreateMutationResult<TAppRoute, TClientArgs>;

@@ -2,6 +2,9 @@ import {
   QueryFunction,
   QueryFunctionContext,
   QueryKey,
+  CreateMutationOptions as TanStackCreateMutationOptions,
+  CreateQueryOptions as TanStackCreateQueryOptions,
+  createMutation,
   createQuery,
 } from '@tanstack/svelte-query';
 import {
@@ -11,12 +14,12 @@ import {
   ClientArgs,
   ClientInferRequest,
   Without,
+  ZodInferOrType,
   evaluateFetchApiArgs,
   fetchApi,
   isAppRoute,
 } from '@ts-rest/core';
 import { AppRouteFunctions } from './inner-types';
-import { CreateQueryOptions } from './types';
 
 const queryFn = <TAppRoute extends AppRoute, TClientArgs extends ClientArgs>(
   route: TAppRoute,
@@ -72,6 +75,7 @@ export const initQueryClient = <
             key,
             {
               createQuery: getRouteCreateQuery(subRouter, clientArgs),
+              createMutation: getRouteCreateMutation(subRouter, clientArgs),
             },
           ];
         } else {
@@ -100,9 +104,35 @@ const getRouteCreateQuery = <
   return (
     queryKey: QueryKey,
     args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
-    options?: CreateQueryOptions<TAppRoute>,
+    options?: TanStackCreateQueryOptions<TAppRoute['responses']> & {
+      initialData: any;
+    },
   ) => {
     const dataFn = queryFn(route, clientArgs, args);
     return createQuery({ queryKey, queryFn: dataFn, ...options });
+  };
+};
+
+const getRouteCreateMutation = <
+  TAppRoute extends AppRoute,
+  TClientArgs extends ClientArgs,
+>(
+  route: TAppRoute,
+  clientArgs: TClientArgs,
+) => {
+  return (options?: TanStackCreateMutationOptions<TAppRoute['responses']>) => {
+    const mutationFunction = async (
+      args?: ClientInferRequest<AppRouteMutation, ClientArgs>,
+    ) => {
+      const dataFn = queryFn(route, clientArgs, args);
+      return dataFn(undefined as any);
+    };
+
+    return createMutation({
+      mutationFn: mutationFunction as () => Promise<
+        ZodInferOrType<TAppRoute['responses']>
+      >,
+      ...options,
+    });
   };
 };
