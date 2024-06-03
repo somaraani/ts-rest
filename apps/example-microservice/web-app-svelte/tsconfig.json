@@ -1,0 +1,15 @@
+{
+  "extends": ["../../../tsconfig.settings.json"],
+  "compilerOptions": {
+    "outDir": "../../../dist/apps/example-microservice/web-app-svelte",
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "types": ["vite/client"],
+    "noEmit": true,
+    "isolatedModules": true
+  },
+  "include": ["**/*.ts", "**/*.svelte"],
+}

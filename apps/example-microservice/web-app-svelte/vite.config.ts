@@ -1,14 +1,14 @@
 import path from 'path';
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [svelte()],
   server: {
-    port: 5007,
+    port: 5006,
   },
   build: {
-    outDir: '../../../dist/apps/example-microservice/web-app-vue',
+    outDir: '../../../dist/apps/example-microservice/web-app-svelte',
     target: 'esnext',
   },
   resolve: {
@@ -17,9 +17,9 @@ export default defineConfig({
         __dirname,
         '../../../libs/ts-rest/core/src/index.ts'
       ),
-      '@ts-rest/vue-query': path.resolve(
+      '@ts-rest/svelte-query': path.resolve(
         __dirname,
-        '../../../libs/ts-rest/vue-query/src/index.ts'
+        '../../../libs/ts-rest/svelte-query/src/index.ts'
       ),
       '@ts-rest/example-microservice/util-posts-api': path.resolve(
         __dirname,

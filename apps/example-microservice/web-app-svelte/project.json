@@ -1,0 +1,27 @@
+{
+  "name": "example-microservice-web-app-svelte",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/example-microservice/svelte-app/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/example-microservice/web-app-svelte && pnpm exec vite build"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd apps/example-microservice/web-app-svelte && pnpm exec vite"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["apps/example-microservice/web-app/**/*.tsx"]
+      }
+    }
+  },
+  "tags": []
+}
