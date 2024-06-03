@@ -1,5 +1,8 @@
 <script lang="ts">
-    import {Test} from '@ts-rest/svelte-query';
+  import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+  import Posts from './Posts.svelte';
 </script>
 
-<Test name={"Name"} />
+<QueryClientProvider client={new QueryClient()}>
+  <Posts />
+</QueryClientProvider>

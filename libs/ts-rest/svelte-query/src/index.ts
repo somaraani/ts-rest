@@ -1,1 +1,2 @@
-export {default as Test} from './lib/Test.svelte';
+export * from './lib/types';
+export * from './lib/svelte-query';

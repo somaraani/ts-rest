@@ -49,7 +49,7 @@ const queryFn = <TAppRoute extends AppRoute, TClientArgs extends ClientArgs>(
       },
     });
 
-    // If the response is not a 2XX, throw an error to be handled by react-query
+    // If the response is not a 2XX, throw an error to be handled by svelte-query
     if (!String(result.status).startsWith('2')) {
       throw result;
     }
