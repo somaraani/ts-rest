@@ -30,10 +30,13 @@ export type ErrorResponse<TAppRoute extends AppRoute> = ClientInferResponses<
 >;
 
 export type CreateQueryOptions<TAppRoute extends AppRoute> = StoreOrVal<
-  TanStackCreateQueryOptions<
-    DataResponse<TAppRoute>,
-    ErrorResponse<TAppRoute>
-  > & { initialData?: TAppRoute['responses'] }
+  Omit<
+    TanStackCreateQueryOptions<
+      DataResponse<TAppRoute>,
+      ErrorResponse<TAppRoute>
+    >,
+    'queryKey' // we don't want to require queryKey in options, but tanstack has it as required
+  > & { initialData?: ClientInferResponses<TAppRoute> }
 >;
 
 export type CreateQueryResult<TAppRoute extends AppRoute> =
